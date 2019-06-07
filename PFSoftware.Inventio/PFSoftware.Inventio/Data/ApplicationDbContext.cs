@@ -13,10 +13,7 @@ namespace PFSoftware.Inventio.Data
             : base(options)
         {
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder) => base.OnModelCreating(modelBuilder);
         public DbSet<Category> Categories { get; set; }
         public DbSet<Client> Clients { get; set; }
     }

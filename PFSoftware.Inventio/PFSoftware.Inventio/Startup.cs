@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using PFSoftware.Inventio.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PFSoftware.Inventio.Models;
 
 namespace PFSoftware.Inventio
 {
