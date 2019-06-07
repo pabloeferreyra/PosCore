@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PFSoftware.Inventio.Models
 {
-    public class Client
+    public class Client 
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
@@ -21,5 +21,6 @@ namespace PFSoftware.Inventio.Models
         public int BuyCount { get; set; }
         [DataType(DataType.Date)]
         public DateTime LastBuy { get; set; }
+        public ICollection<Sale> Sales { get; set; }
     }
 }

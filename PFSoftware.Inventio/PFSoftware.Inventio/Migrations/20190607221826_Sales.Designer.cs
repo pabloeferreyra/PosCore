@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PFSoftware.Inventio.Data;
 
 namespace PFSoftware.Inventio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190607221826_Sales")]
+    partial class Sales
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -247,6 +249,8 @@ namespace PFSoftware.Inventio.Migrations
 
                     b.Property<string>("Image");
 
+                    b.Property<Guid?>("SaleId");
+
                     b.Property<int>("Sales")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("0");
@@ -258,6 +262,8 @@ namespace PFSoftware.Inventio.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("SaleId");
 
                     b.ToTable("Products");
                 });
@@ -336,6 +342,10 @@ namespace PFSoftware.Inventio.Migrations
                     b.HasOne("PFSoftware.Inventio.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId");
+
+                    b.HasOne("PFSoftware.Inventio.Models.Sale")
+                        .WithMany("Products")
+                        .HasForeignKey("SaleId");
                 });
 
             modelBuilder.Entity("PFSoftware.Inventio.Models.Sale", b =>
