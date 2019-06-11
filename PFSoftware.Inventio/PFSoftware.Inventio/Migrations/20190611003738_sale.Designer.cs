@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PFSoftware.Inventio.Data;
 
 namespace PFSoftware.Inventio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190611003738_sale")]
+    partial class sale
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -286,19 +288,6 @@ namespace PFSoftware.Inventio.Migrations
                     b.ToTable("Sales");
                 });
 
-            modelBuilder.Entity("PFSoftware.Inventio.Models.SaleProduct", b =>
-                {
-                    b.Property<Guid>("SaleId");
-
-                    b.Property<Guid>("ProductId");
-
-                    b.HasKey("SaleId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("SaleProduct");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
@@ -356,19 +345,6 @@ namespace PFSoftware.Inventio.Migrations
                     b.HasOne("PFSoftware.Inventio.Models.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId");
-                });
-
-            modelBuilder.Entity("PFSoftware.Inventio.Models.SaleProduct", b =>
-                {
-                    b.HasOne("PFSoftware.Inventio.Models.Product", "Product")
-                        .WithMany("SaleProducts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("PFSoftware.Inventio.Models.Sale", "Sale")
-                        .WithMany("SaleProducts")
-                        .HasForeignKey("SaleId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

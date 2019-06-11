@@ -19,7 +19,7 @@ namespace PFSoftware.Inventio.Models
         public float BuyPrice { get; set; }
         public float SellPrice { get; set; }
         public int Sales { get; set; }
-        public Sale Sale { get; set; }
+        public ICollection<SaleProduct> SaleProducts { get; set; }
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
     }

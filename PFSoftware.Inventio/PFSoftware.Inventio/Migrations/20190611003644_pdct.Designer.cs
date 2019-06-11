@@ -10,8 +10,8 @@ using PFSoftware.Inventio.Data;
 namespace PFSoftware.Inventio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190607221826_Sales")]
-    partial class Sales
+    [Migration("20190611003644_pdct")]
+    partial class pdct
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -249,8 +249,6 @@ namespace PFSoftware.Inventio.Migrations
 
                     b.Property<string>("Image");
 
-                    b.Property<Guid?>("SaleId");
-
                     b.Property<int>("Sales")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("0");
@@ -263,33 +261,7 @@ namespace PFSoftware.Inventio.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("SaleId");
-
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("PFSoftware.Inventio.Models.Sale", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid?>("ClientId");
-
-                    b.Property<int>("Code");
-
-                    b.Property<DateTime>("Date")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("getdate()");
-
-                    b.Property<string>("PaymentMethod");
-
-                    b.Property<float>("Tax");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.ToTable("Sales");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -342,17 +314,6 @@ namespace PFSoftware.Inventio.Migrations
                     b.HasOne("PFSoftware.Inventio.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId");
-
-                    b.HasOne("PFSoftware.Inventio.Models.Sale")
-                        .WithMany("Products")
-                        .HasForeignKey("SaleId");
-                });
-
-            modelBuilder.Entity("PFSoftware.Inventio.Models.Sale", b =>
-                {
-                    b.HasOne("PFSoftware.Inventio.Models.Client", "Client")
-                        .WithMany("Sales")
-                        .HasForeignKey("ClientId");
                 });
 #pragma warning restore 612, 618
         }

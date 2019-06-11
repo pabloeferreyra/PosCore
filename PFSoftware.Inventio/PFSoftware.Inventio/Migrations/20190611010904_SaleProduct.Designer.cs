@@ -10,8 +10,8 @@ using PFSoftware.Inventio.Data;
 namespace PFSoftware.Inventio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190607223926_Salesv2")]
-    partial class Salesv2
+    [Migration("20190611010904_SaleProduct")]
+    partial class SaleProduct
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -288,6 +288,19 @@ namespace PFSoftware.Inventio.Migrations
                     b.ToTable("Sales");
                 });
 
+            modelBuilder.Entity("PFSoftware.Inventio.Models.SaleProduct", b =>
+                {
+                    b.Property<Guid>("SaleId");
+
+                    b.Property<Guid>("ProductId");
+
+                    b.HasKey("SaleId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("SaleProduct");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
@@ -343,8 +356,21 @@ namespace PFSoftware.Inventio.Migrations
             modelBuilder.Entity("PFSoftware.Inventio.Models.Sale", b =>
                 {
                     b.HasOne("PFSoftware.Inventio.Models.Client", "Client")
-                        .WithMany("Sales")
+                        .WithMany()
                         .HasForeignKey("ClientId");
+                });
+
+            modelBuilder.Entity("PFSoftware.Inventio.Models.SaleProduct", b =>
+                {
+                    b.HasOne("PFSoftware.Inventio.Models.Product", "Product")
+                        .WithMany("SaleProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("PFSoftware.Inventio.Models.Sale", "Sale")
+                        .WithMany("SaleProducts")
+                        .HasForeignKey("SaleId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

@@ -3,15 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PFSoftware.Inventio.Migrations
 {
-    public partial class Sales : Migration
+    public partial class sale : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<Guid>(
-                name: "SaleId",
-                table: "Products",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "Sales",
                 columns: table => new
@@ -35,40 +30,15 @@ namespace PFSoftware.Inventio.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_SaleId",
-                table: "Products",
-                column: "SaleId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Sales_ClientId",
                 table: "Sales",
                 column: "ClientId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Products_Sales_SaleId",
-                table: "Products",
-                column: "SaleId",
-                principalTable: "Sales",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Products_Sales_SaleId",
-                table: "Products");
-
             migrationBuilder.DropTable(
                 name: "Sales");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Products_SaleId",
-                table: "Products");
-
-            migrationBuilder.DropColumn(
-                name: "SaleId",
-                table: "Products");
         }
     }
 }

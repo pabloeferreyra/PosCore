@@ -32,10 +32,16 @@ namespace PFSoftware.Inventio.Data
             builder.Entity<Sale>()
             .Property(b => b.Date)
             .HasDefaultValueSql("getdate()");
-            builder.Entity<Sale>()
-                .HasMany(p => p.Products)
-                .WithOne();
-
+            builder.Entity<SaleProduct>()
+                .HasKey(sp => new { sp.SaleId, sp.ProductId });
+            builder.Entity<SaleProduct>()
+                .HasOne(sp => sp.Product)
+                .WithMany(p => p.SaleProducts)
+                .HasForeignKey(sp => sp.ProductId);
+            builder.Entity<SaleProduct>()
+                .HasOne(sp => sp.Sale)
+                .WithMany(p => p.SaleProducts)
+                .HasForeignKey(sp => sp.SaleId);
         }
 
         public DbSet<Category> Categories { get; set; }
