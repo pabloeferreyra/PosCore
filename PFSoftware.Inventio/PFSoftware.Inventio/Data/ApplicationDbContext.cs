@@ -48,5 +48,6 @@ namespace PFSoftware.Inventio.Data
         public DbSet<Client> Clients { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Sale> Sales { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
     }
 }

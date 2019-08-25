@@ -3,19 +3,21 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PFSoftware.Inventio.Data;
 
 namespace PFSoftware.Inventio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190825011409_PaymentMethod")]
+    partial class PaymentMethod
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -287,15 +289,13 @@ namespace PFSoftware.Inventio.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
-                    b.Property<Guid?>("PaymentMethodId");
+                    b.Property<string>("PaymentMethod");
 
                     b.Property<float>("Tax");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("PaymentMethodId");
 
                     b.ToTable("Sales");
                 });
@@ -370,10 +370,6 @@ namespace PFSoftware.Inventio.Migrations
                     b.HasOne("PFSoftware.Inventio.Models.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId");
-
-                    b.HasOne("PFSoftware.Inventio.Models.PaymentMethod", "PaymentMethod")
-                        .WithMany()
-                        .HasForeignKey("PaymentMethodId");
                 });
 
             modelBuilder.Entity("PFSoftware.Inventio.Models.SaleProduct", b =>

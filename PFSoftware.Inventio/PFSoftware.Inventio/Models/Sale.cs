@@ -14,7 +14,7 @@ namespace PFSoftware.Inventio.Models
         public int Code { get; set; }
         public Client Client { get; set; }
         public float Tax { get; set; }
-        public string PaymentMethod { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
         public ICollection<SaleProduct> SaleProducts { get; set; }
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
