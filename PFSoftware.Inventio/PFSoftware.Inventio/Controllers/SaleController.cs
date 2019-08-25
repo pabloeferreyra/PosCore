@@ -48,7 +48,7 @@ namespace PFSoftware.Inventio.Controllers
         {
             List<PaymentMethod> paymentMethods = (from PaymentMethod in _context.PaymentMethods
                               select PaymentMethod).ToList();
-            paymentMethods.Insert(0, new PaymentMethod { Id = Guid.Empty, Name = "Select" });
+            paymentMethods.Insert(0, new PaymentMethod { Id = Guid.Empty, Name = "Seleccione..." });
             ViewBag.Methods = paymentMethods;
             return View();
         }
