@@ -13,6 +13,7 @@ using PFSoftware.Inventio.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PFSoftware.Inventio.Models;
+using PFSoftware.Inventio.Repository;
 
 namespace PFSoftware.Inventio
 {
@@ -41,7 +42,15 @@ namespace PFSoftware.Inventio
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc();
+
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IClientRepository, ClientRepository>();
+            services.AddTransient<IPaymentMethodRepository, PaymentMethodRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<ISaleProductRepository, SaleProductRepository>();
+            services.AddTransient<ISaleRepository, SaleRepository>();
+            services.AddTransient<IPaymentMethodRepository, PaymentMethodRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

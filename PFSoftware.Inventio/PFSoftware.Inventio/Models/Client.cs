@@ -21,6 +21,5 @@ namespace PFSoftware.Inventio.Models
         public int BuyCount { get; set; }
         [DataType(DataType.Date)]
         public DateTime LastBuy { get; set; }
-        //public ICollection<Sale> Sales { get; set; }
     }
 }

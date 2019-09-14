@@ -19,6 +19,11 @@ namespace PFSoftware.Inventio.Controllers
             _context = context;
         }
 
+        public IActionResult GetAutoCompleteResult(string search)
+        {
+            return Json(_context.Products.Where(p => p.Code == search || p.Description.Contains(search)).ToList());
+        }
+
         // GET: Product
         public async Task<IActionResult> Index()
         {

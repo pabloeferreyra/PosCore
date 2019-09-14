@@ -11,7 +11,6 @@ namespace PFSoftware.Inventio.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public int Code { get; set; }
         public Client Client { get; set; }
         public float Tax { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
