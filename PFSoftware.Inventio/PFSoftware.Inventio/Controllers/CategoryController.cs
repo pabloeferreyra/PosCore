@@ -7,22 +7,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PFSoftware.Inventio.Data;
 using PFSoftware.Inventio.Models;
+using PFSoftware.Inventio.Repository;
 
 namespace PFSoftware.Inventio.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public CategoryController(ApplicationDbContext context)
+        public CategoryController(ICategoryRepository categoryRepository)
         {
-            _context = context;
+            _categoryRepository = categoryRepository;
         }
 
         // GET: Category
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            return View(await _categoryRepository.FindAllAsync());
         }
 
         // GET: Category/Details/5
@@ -33,8 +34,7 @@ namespace PFSoftware.Inventio.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoryRepository.FindByAsync(m => m.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -59,8 +59,7 @@ namespace PFSoftware.Inventio.Controllers
             if (ModelState.IsValid)
             {
                 category.Id = Guid.NewGuid();
-                _context.Add(category);
-                await _context.SaveChangesAsync();
+                await _categoryRepository.CreateAsync(category);
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -74,7 +73,7 @@ namespace PFSoftware.Inventio.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _categoryRepository.FindSingleAsync(m => m.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -87,7 +86,7 @@ namespace PFSoftware.Inventio.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Date")] Category category)
+        public IActionResult Edit(Guid id, [Bind("Id,Name,Date")] Category category)
         {
             if (id != category.Id)
             {
@@ -98,8 +97,7 @@ namespace PFSoftware.Inventio.Controllers
             {
                 try
                 {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
+                    _categoryRepository.Update(category);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -125,13 +123,11 @@ namespace PFSoftware.Inventio.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoryRepository.FindSingleAsync(m => m.Id == id);
             if (category == null)
             {
                 return NotFound();
             }
-
             return View(category);
         }
 
@@ -140,15 +136,14 @@ namespace PFSoftware.Inventio.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            var category = await _categoryRepository.FindSingleAsync(m => m.Id == id);
+            _categoryRepository.Remove(category);
             return RedirectToAction(nameof(Index));
         }
 
         private bool CategoryExists(Guid id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return _categoryRepository.Any(e => e.Id == id);
         }
     }
 }

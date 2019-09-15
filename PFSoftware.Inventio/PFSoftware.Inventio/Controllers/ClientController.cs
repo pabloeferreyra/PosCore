@@ -7,22 +7,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PFSoftware.Inventio.Data;
 using PFSoftware.Inventio.Models;
+using PFSoftware.Inventio.Repository;
 
 namespace PFSoftware.Inventio.Controllers
 {
     public class ClientController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IClientRepository _clientRepository;
 
-        public ClientController(ApplicationDbContext context)
+        public ClientController(IClientRepository clientRepository)
         {
-            _context = context;
+            _clientRepository = clientRepository;
         }
 
         // GET: Client
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Clients.ToListAsync());
+            return View(await _clientRepository.FindAllAsync());
         }
 
         // GET: Client/Details/5
@@ -33,8 +34,7 @@ namespace PFSoftware.Inventio.Controllers
                 return NotFound();
             }
 
-            var client = await _context.Clients
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var client = await _clientRepository.FindByAsync(m => m.Id == id);
             if (client == null)
             {
                 return NotFound();
@@ -59,8 +59,7 @@ namespace PFSoftware.Inventio.Controllers
             if (ModelState.IsValid)
             {
                 client.Id = Guid.NewGuid();
-                _context.Add(client);
-                await _context.SaveChangesAsync();
+                await _clientRepository.CreateAsync(client);
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
@@ -74,7 +73,7 @@ namespace PFSoftware.Inventio.Controllers
                 return NotFound();
             }
 
-            var client = await _context.Clients.FindAsync(id);
+            var client = await _clientRepository.FindSingleAsync(m => m.Id == id);
             if (client == null)
             {
                 return NotFound();
@@ -87,7 +86,7 @@ namespace PFSoftware.Inventio.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Dni,Email,Phone,Address,BirthDate")] Client client)
+        public IActionResult Edit(Guid id, [Bind("Id,Name,Dni,Email,Phone,Address,BirthDate")] Client client)
         {
             if (id != client.Id)
             {
@@ -98,8 +97,7 @@ namespace PFSoftware.Inventio.Controllers
             {
                 try
                 {
-                    _context.Update(client);
-                    await _context.SaveChangesAsync();
+                    _clientRepository.Update(client);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -125,13 +123,11 @@ namespace PFSoftware.Inventio.Controllers
                 return NotFound();
             }
 
-            var client = await _context.Clients
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var client = await _clientRepository.FindSingleAsync(m => m.Id == id);
             if (client == null)
             {
                 return NotFound();
             }
-
             return View(client);
         }
 
@@ -140,15 +136,14 @@ namespace PFSoftware.Inventio.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var client = await _context.Clients.FindAsync(id);
-            _context.Clients.Remove(client);
-            await _context.SaveChangesAsync();
+            var client = await _clientRepository.FindSingleAsync(m => m.Id == id);
+            _clientRepository.Remove(client);
             return RedirectToAction(nameof(Index));
         }
 
         private bool ClientExists(Guid id)
         {
-            return _context.Clients.Any(e => e.Id == id);
+            return _clientRepository.Any(e => e.Id == id);
         }
     }
 }

@@ -10,14 +10,24 @@ namespace PFSoftware.Inventio.GenericRepository
     {
         void Create(T t);
 
+        Task CreateAsync(T t);
+
         void Update(T t);
 
         void Remove(T t);
 
         List<T> FindAll();
 
+        Task<List<T>> FindAllAsync();
+
         List<T> FindBy(Expression<Func<T, bool>> predicate);
 
+        Task<List<T>> FindByAsync(Expression<Func<T, bool>> predicate);
+
         T FindSingle(Expression<Func<T, bool>> predicate);
+
+        Task<T> FindSingleAsync(Expression<Func<T, bool>> predicate);
+
+        bool Any(Expression<Func<T, bool>> predicate);
     }
 }

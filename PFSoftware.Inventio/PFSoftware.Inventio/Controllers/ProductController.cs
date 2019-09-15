@@ -7,27 +7,30 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PFSoftware.Inventio.Data;
 using PFSoftware.Inventio.Models;
+using PFSoftware.Inventio.Repository;
 
 namespace PFSoftware.Inventio.Controllers
 {
     public class ProductController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IProductRepository _productRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public ProductController(ApplicationDbContext context)
+        public ProductController(IProductRepository productRepository, ICategoryRepository categoryRepository)
         {
-            _context = context;
+            _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
         }
 
-        public IActionResult GetAutoCompleteResult(string search)
-        {
-            return Json(_context.Products.Where(p => p.Code == search || p.Description.Contains(search)).ToList());
-        }
+        //public IActionResult GetAutoCompleteResult(string search)
+        //{
+        //    return Json(_context.Products.Where(p => p.Code == search || p.Description.Contains(search)).ToList());
+        //}
 
         // GET: Product
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            return View(await _productRepository.FindAllAsync());
         }
 
         // GET: Product/Details/5
@@ -38,8 +41,8 @@ namespace PFSoftware.Inventio.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var product = await _productRepository.FindSingleAsync(m => m.Id == id);
+
             if (product == null)
             {
                 return NotFound();
@@ -49,10 +52,9 @@ namespace PFSoftware.Inventio.Controllers
         }
 
         // GET: Product/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            List<Category> categories = (from Category in _context.Categories
-                                         select Category).ToList();
+            List<Category> categories = await _categoryRepository.FindAllAsync();
             categories.Insert(0, new Category { Id = Guid.Empty, Name = "Seleccione..." });
             ViewBag.Categories = categories;
             return View();
@@ -68,8 +70,7 @@ namespace PFSoftware.Inventio.Controllers
             if (ModelState.IsValid)
             {
                 product.Id = Guid.NewGuid();
-                _context.Add(product);
-                await _context.SaveChangesAsync();
+                await _productRepository.CreateAsync(product);
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
@@ -83,7 +84,7 @@ namespace PFSoftware.Inventio.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = await _productRepository.FindSingleAsync(m => m.Id == id);
             if (product == null)
             {
                 return NotFound();
@@ -96,7 +97,7 @@ namespace PFSoftware.Inventio.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Code,Description,Image,Stock,BuyPrice,SellPrice,Sales,Date")] Product product)
+        public IActionResult Edit(Guid id, [Bind("Id,Code,Description,Image,Stock,BuyPrice,SellPrice,Sales,Date")] Product product)
         {
             if (id != product.Id)
             {
@@ -107,8 +108,7 @@ namespace PFSoftware.Inventio.Controllers
             {
                 try
                 {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
+                    _productRepository.Update(product);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -134,13 +134,11 @@ namespace PFSoftware.Inventio.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var product = await _productRepository.FindSingleAsync(m => m.Id == id);
             if (product == null)
             {
                 return NotFound();
             }
-
             return View(product);
         }
 
@@ -149,15 +147,14 @@ namespace PFSoftware.Inventio.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var product = await _context.Products.FindAsync(id);
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
+            var product = await _productRepository.FindSingleAsync(m => m.Id == id);
+            _productRepository.Remove(product);
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProductExists(Guid id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            return _productRepository.Any(e => e.Id == id);
         }
     }
 }
